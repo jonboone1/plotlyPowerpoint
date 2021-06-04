@@ -21,7 +21,7 @@ Additionally, if you want to be able to visualize plotly charts, you may have to
     pip install plotlyPowerpoint
 
 ### Step 3 - Prepare Your Powerpoint
-The main function of this library is meant to generate slides which include a plotly chart. In order to do this, you must prepare a powerpoint template with the proper layout. You can design any layout you desire, but make sure that each element you desire to fill with python is created as a placeholder. You can use a powerpoint template I've included in my source code to make things easy.
+The main function of this library is meant to generate slides which include a plotly chart. In order to do this, you must prepare a powerpoint template with the proper layout. You can design any layout you desire, but make sure that each element you desire to fill with python is created as a placeholder. You can use a powerpoint template I've included in my source code to make things easy (assets/powerpoint_templates/template.pptx).
 
 In order to do this, open up your desired powerpoint and go into the slide master. Insert a new slide or use a current one already created. I recommend to drag this to be first in the order, this will make your life easier later down the road. Now insert the proper elements and arragne them as you please. For the chart, insert an image placeholder and make the apsect ratio similar to a laptop screen. Most images created are in landscape view but not too wide.
 
@@ -30,6 +30,7 @@ Here is an example of what my template looks like.
 
 ### Step 4 - Load Library and Prepare Data
 If you want to follow along with my tutorial, feel free and copy/paste my code. However, ensure you have `pydataset` installed before you do.
+    
     from pptx import Presentation
     import pandas as pd
     from pydataset import data
@@ -51,7 +52,6 @@ If you want to follow along with my tutorial, feel free and copy/paste my code. 
 ### Step 5 - Find Your Powerpoint Elements
 In order for this library to know where to place each element, you must give it each element index. See the following code to learn how to do this:
 
-Find index for each element
     #load presentation
     prs = Presentation("template.pptx")
 
@@ -63,6 +63,7 @@ Find index for each element
         print('%d %s' % (shape.placeholder_format.idx, shape.name))
 
 Now set each index for the elements you want to insert
+
     #set global index for each item on template slide
     setItemIndex('slide', 0)
     setItemIndex("title", 0)
@@ -74,6 +75,7 @@ As of now, this library only supports `slide`, `title`, `chart`, and `descriptio
 
 ### Step 6 - Set Template
 Now that we have our powerpoint template, we need to tell the library where to find this file. Do this with the following:
+
     pp.setTemplate("path_to_template")
 
 ### Step 7 - Define Charts

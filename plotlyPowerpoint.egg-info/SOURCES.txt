@@ -1,6 +1,20 @@
 LICENSE
 README.md
+requirements.txt
 setup.py
+assets/images/powerpoint_slide_template.jpg
+dist/plotlyPowerpoint-1.0.0-py3-none-any.whl
+dist/plotlyPowerpoint-1.0.0.tar.gz
+dist/plotlyPowerpoint-1.1.1-py3-none-any.whl
+dist/plotlyPowerpoint-1.1.1.tar.gz
+dist/plotlyPowerpoint-1.1.2-py3-none-any.whl
+dist/plotlyPowerpoint-1.1.2.tar.gz
+dist/plotlyPowerpoint-1.1.3-py3-none-any.whl
+dist/plotlyPowerpoint-1.1.3.tar.gz
+dist/plotlyPowerpoint-1.1.4-py3-none-any.whl
+dist/plotlyPowerpoint-1.1.4.tar.gz
+dist/plotlyPowerpoint-1.1.5-py3-none-any.whl
+dist/plotlyPowerpoint-1.1.5.tar.gz
 plotlyPowerpoint/__init__.py
 plotlyPowerpoint/core.py
 plotlyPowerpoint.egg-info/PKG-INFO
@@ -8,3 +22,5 @@ plotlyPowerpoint.egg-info/SOURCES.txt
 plotlyPowerpoint.egg-info/dependency_links.txt
 plotlyPowerpoint.egg-info/requires.txt
 plotlyPowerpoint.egg-info/top_level.txt
+plotlyPowerpoint/__pycache__/__init__.cpython-36.pyc
+plotlyPowerpoint/__pycache__/core.cpython-36.pyc
