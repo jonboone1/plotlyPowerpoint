@@ -1,0 +1,6 @@
+# listing out all package requirements
+pandas
+plotly
+pptx
+numerize
+scipy

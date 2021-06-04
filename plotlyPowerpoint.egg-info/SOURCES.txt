@@ -1,0 +1,10 @@
+LICENSE
+README.md
+setup.py
+plotlyPowerpoint/__init__.py
+plotlyPowerpoint/core.py
+plotlyPowerpoint.egg-info/PKG-INFO
+plotlyPowerpoint.egg-info/SOURCES.txt
+plotlyPowerpoint.egg-info/dependency_links.txt
+plotlyPowerpoint.egg-info/requires.txt
+plotlyPowerpoint.egg-info/top_level.txt
