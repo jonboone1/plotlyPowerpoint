@@ -83,7 +83,7 @@ Here is where the work is done. Creating slides with charts is done by defining 
 
     charts = [
         { #Line Chart - stock prices
-            "data": "df2",
+            "data": df2,
             "type": "line",
             "name": "Stock Prices by Company",
             "filename": 'charts/stock-prices-by-company',
@@ -99,7 +99,7 @@ Here is where the work is done. Creating slides with charts is done by defining 
             ]
         },
         { #Bar chart of insect sprays
-            "data": "df",
+            "data": df,
             "type": "bar",
             "name": "Avg Spray Effictiveness by Type",
             "filename": 'charts/spray-by-type',
@@ -125,3 +125,5 @@ I will go into more detail on each one of these variables, but for now just note
     pp.createSlides(charts)
 
 This will output a file called `output.pptx`. I suggest you do not make this your final file, as each time you run this function you will overwrite the powerpoint. Create a copy of this file and start to create your analysis/report there. From here, you can use `output.pptx` as a slide library, where you can include or delete any chart you create. 
+
+## Documentation

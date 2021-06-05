@@ -7,13 +7,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="plotlyPowerpoint",
-    version="1.1.6",
+    version="1.1.10",
     author="Jon Boone",
     author_email="jonboone1@gmail.com",
     description="A library using Plotly and Powerpoint to easily generate slides with plotly charts in them",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com",
+    url="https://github.com/jonboone1/plotlyPowerpoint",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

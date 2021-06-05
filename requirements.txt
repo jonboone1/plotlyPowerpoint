@@ -1,6 +1,14 @@
 # listing out all package requirements
-pandas
-plotly
-pptx
-numerize
-scipy
+pandas>=1.2.4
+plotly>=4.14.3
+numerize>=0.12
+scipy>=1.6.3
+behave>=1.2.5
+flake8>=2.0
+lxml>=3.1.0
+mock>=1.0.1
+Pillow>=3.3.2
+pyparsing>=2.0.1
+pytest>=2.5
+XlsxWriter>=0.5.7
+python-pptx==0.6.19

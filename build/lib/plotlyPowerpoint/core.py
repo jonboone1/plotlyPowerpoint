@@ -63,11 +63,11 @@ def createSlides(charts):
         #####################
 
         #get data defined
-        temp = globals()[chartDefinition["data"]]
+        temp = chartDefinition['data']
 
         #filter data if needed
         if 'filters' in chartDefinition:
-            filters = [];
+            filters = []
             for item in chartDefinition['filters']:
                 if item["type"] == "int":
                     statement = "temp['" + item["variable"] + "'] " + item["operation"] + " int(" + item["value"] + ")"
@@ -86,7 +86,7 @@ def createSlides(charts):
 
         #group data by axis and breakdowns
         #assembe list
-        groupList = [];
+        groupList = []
         if 'color' in chartDefinition:
             groupList.append(chartDefinition['color'])
 
@@ -440,21 +440,21 @@ def createSlides(charts):
                     #get proper color for line
                     if 'color-grouping' in chartDefinition['options']:
                         if chartDefinition['options']['color-grouping'] == 'facet':
-                            lineColor = mainColors[position]
-                        if chartDefinition['options']['color-grouping'] == 'axis':
+                            barColor = mainColors[position]
+                        elif chartDefinition['options']['color-grouping'] == 'axis':
                             axisPoints = temp2[chartDefinition['axis']].unique()
-                            lineColor = mainColors[0:len(axisPoints)]
+                            barColor = mainColors[0:len(axisPoints)]
                         else:
-                            lineColor = mainColors[i]
+                            barColor = mainColors[i]
                     else:
-                        lineColor = mainColors[i]
+                        barColor = mainColors[i]
 
                     fig.add_trace(
                         go.Bar(
                             x=temp2[chartDefinition['axis']],
                             y=temp2[chartDefinition['metrics'][i]['name']],
                             name=facet,
-                            marker=dict(color=lineColor)
+                            marker=dict(color=barColor)
                         ), 
                         position + 1 if chartDefinition['facet_direction'] == 'rows' else 1,
                         position + 1 if chartDefinition['facet_direction'] == 'columns' else 1

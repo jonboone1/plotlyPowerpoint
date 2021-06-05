@@ -3,6 +3,7 @@ README.md
 requirements.txt
 setup.py
 assets/images/powerpoint_slide_template.jpg
+assets/powerpoint_templates/template.pptx
 dist/plotlyPowerpoint-1.0.0-py3-none-any.whl
 dist/plotlyPowerpoint-1.0.0.tar.gz
 dist/plotlyPowerpoint-1.1.1-py3-none-any.whl
@@ -15,6 +16,8 @@ dist/plotlyPowerpoint-1.1.4-py3-none-any.whl
 dist/plotlyPowerpoint-1.1.4.tar.gz
 dist/plotlyPowerpoint-1.1.5-py3-none-any.whl
 dist/plotlyPowerpoint-1.1.5.tar.gz
+dist/plotlyPowerpoint-1.1.6-py3-none-any.whl
+dist/plotlyPowerpoint-1.1.6.tar.gz
 plotlyPowerpoint/__init__.py
 plotlyPowerpoint/core.py
 plotlyPowerpoint.egg-info/PKG-INFO
