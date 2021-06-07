@@ -79,7 +79,9 @@ Now that we have our powerpoint template, we need to tell the library where to f
     pp.setTemplate("path_to_template")
 
 ### Step 7 - Define Charts
-Here is where the work is done. Creating slides with charts is done by defining an array of dictionary objects. Each object represents one slide. As a start, I will define two basic charts:
+Here is where the work is done. Creating slides with charts is done by defining an array of dictionary objects. Each object represents one slide. Everything must be represented as a string except your dataframe object. Additionally, this library automatically groups every dataframe down to the level needed for the specific chart. Therefore, you don't have to create a new dataframe for each chart. As long as your df has the right data in it, this function will do the rest.
+
+As a start, I will define two basic charts:
 
     charts = [
         { #Line Chart - stock prices
@@ -124,6 +126,4 @@ I will go into more detail on each one of these variables, but for now just note
     #run function
     pp.createSlides(charts)
 
-This will output a file called `output.pptx`. I suggest you do not make this your final file, as each time you run this function you will overwrite the powerpoint. Create a copy of this file and start to create your analysis/report there. From here, you can use `output.pptx` as a slide library, where you can include or delete any chart you create. 
-
-## Documentation
+This will output a file called `output.pptx`. I suggest you do not make this your final file, as each time you run this function you will overwrite the powerpoint. Create a copy of this file and start to create your analysis/report there. From here, you can use `output.pptx` as a slide library, where you can include or delete any chart you create.

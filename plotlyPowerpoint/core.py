@@ -271,29 +271,16 @@ def createSlides(charts):
                         y = temp[chartDefinition['metrics'][i]['name']]
                         orien='v'
 
-                    #determine how colors will be given to bars
-                    if 'options' in chartDefinition:
-                        if 'color-grouping' in chartDefinition['options']:
-                            if chartDefinition['options']['color-grouping'] == 'axis':
-                                barCount = len(temp[chartDefinition['metrics'][i]['name']])
-                                barColors = mainColors[0:barCount]
-                            else:
-                                barColors = mainColors[i]
-                        else:
-                            barColors = mainColors[i]
-                    else:
-                        barColors = mainColors[i]
-
                     #add trace to chart    
                     fig.add_trace(
                         go.Bar(
                             x=x,
                             y=y,
                             name=chartDefinition['metrics'][i]['prettyName'],
-                            marker_color=barColors,
+                            marker_color=mainColors[i],
                             orientation=orien
                         )
-                    )            
+                    ) 
 
             #change aesthetics
             fig.update_layout({
@@ -338,7 +325,7 @@ def createSlides(charts):
             
             #Create Fig
             facets = temp[chartDefinition['facet']].unique().tolist()
-            if chartDefinition['facet_direction'] == 'rows':
+            if chartDefinition['facet-direction'] == 'rows':
                 fig = make_subplots(len(facets), 1)
             else:
                 fig = make_subplots(1, len(facets))
@@ -368,8 +355,8 @@ def createSlides(charts):
                             name=facet,
                             line = dict(color=lineColor)
                         ), 
-                        position + 1 if chartDefinition['facet_direction'] == 'rows' else 1,
-                        position + 1 if chartDefinition['facet_direction'] == 'columns' else 1
+                        position + 1 if chartDefinition['facet-direction'] == 'rows' else 1,
+                        position + 1 if chartDefinition['facet-direction'] == 'columns' else 1
                     )
               
             
@@ -404,7 +391,7 @@ def createSlides(charts):
 
             #X axis title
             if 'x-axis-title' in chartDefinition:
-                if chartDefinition['facet_direction'] == 'rows':
+                if chartDefinition['facet-direction'] == 'rows':
                     fig.update_xaxes(title_text=chartDefinition['x-axis-title'], row=len(facets), col=1)
                 else:
                     for i in range(len(facets)):
@@ -412,7 +399,7 @@ def createSlides(charts):
 
             #Y axis title
             if 'y-axis-title' in chartDefinition:
-                if chartDefinition['facet_direction'] == 'rows':
+                if chartDefinition['facet-direction'] == 'rows':
                     for i in range(len(facets)):
                         fig.update_yaxes(title_text=chartDefinition['y-axis-title'], row=i+1, col=1)
                 else:
@@ -424,7 +411,7 @@ def createSlides(charts):
             
             #Create Fig
             facets = temp[chartDefinition['facet']].unique().tolist()
-            if chartDefinition['facet_direction'] == 'rows':
+            if chartDefinition['facet-direction'] == 'rows':
                 fig = make_subplots(len(facets), 1)
             else:
                 fig = make_subplots(1, len(facets))
@@ -456,8 +443,8 @@ def createSlides(charts):
                             name=facet,
                             marker=dict(color=barColor)
                         ), 
-                        position + 1 if chartDefinition['facet_direction'] == 'rows' else 1,
-                        position + 1 if chartDefinition['facet_direction'] == 'columns' else 1
+                        position + 1 if chartDefinition['facet-direction'] == 'rows' else 1,
+                        position + 1 if chartDefinition['facet-direction'] == 'columns' else 1
                     )
 
             #change aesthetics
