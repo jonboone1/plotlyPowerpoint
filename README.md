@@ -62,15 +62,7 @@ In order for this library to know where to place each element, you must give it 
     for shape in slide.placeholders:
         print('%d %s' % (shape.placeholder_format.idx, shape.name))
 
-Now set each index for the elements you want to insert
-
-    #set global index for each item on template slide
-    setItemIndex('slide', 0)
-    setItemIndex("title", 0)
-    setItemIndex("chart", 10)
-    setItemIndex("description", 11)
-
-As of now, this library only supports `slide`, `title`, `chart`, and `description`.
+You will need this information later on.
 
 
 ### Step 6 - Set Template
@@ -98,7 +90,13 @@ As a start, I will define two basic charts:
             "description": "Grouping by additional variables is easy",
             "filters": [
                 {"variable": "year", "operation": ">=", "value": "1970", "type":"int"}
-            ]
+            ],
+            "item-index": {
+                'slide': 0,
+                'title': 0,
+                'chart': 10,
+                'description': 12
+            }
         },
         { #Bar chart of insect sprays
             "data": df,
@@ -116,6 +114,12 @@ As a start, I will define two basic charts:
             'options': {
                 'orientation': 'horizontal',
                 'color-grouping': 'metric'
+            },
+            "item-index": {
+                'slide': 0,
+                'title': 0,
+                'chart': 10,
+                'description': 12
             }
         }
     ]
