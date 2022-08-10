@@ -327,7 +327,7 @@ def createSlides(charts):
             
             #Create Fig
             facets = temp[chartDefinition['facet']].unique().tolist()
-            if chartDefinition['facet-direction'] == 'rows':
+            if chartDefinition['facet_direction'] == 'rows':
                 fig = make_subplots(len(facets), 1)
             else:
                 fig = make_subplots(1, len(facets))

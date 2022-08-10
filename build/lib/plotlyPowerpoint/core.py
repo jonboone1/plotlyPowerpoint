@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from numerize import numerize 
 from scipy.stats import pearsonr
+from pptx.dml.color import RGBColor
 
 def setTemplate(fileName):
     from pptx import Presentation
@@ -85,25 +86,26 @@ def createSlides(charts):
                     temp = temp.loc[eval(filters[i]), :]
 
         #group data by axis and breakdowns
-        #assembe list
-        groupList = []
-        if 'color' in chartDefinition:
-            groupList.append(chartDefinition['color'])
+        if chartDefinition['type'] != 'table':
+            #assembe list
+            groupList = []
+            if 'color' in chartDefinition:
+                groupList.append(chartDefinition['color'])
 
-        #add axis
-        groupList.append(chartDefinition['axis'])
+            #add axis
+            groupList.append(chartDefinition['axis'])
 
-        #add facet if included
-        if 'facet' in chartDefinition:
-            groupList.append(chartDefinition['facet'])
+            #add facet if included
+            if 'facet' in chartDefinition:
+                groupList.append(chartDefinition['facet'])
 
-        #assemble dictionary for aggregation
-        metricDict = {}
-        for metric in chartDefinition["metrics"]:
-            metricDict[metric["name"]] = metric["method"]
+            #assemble dictionary for aggregation
+            metricDict = {}
+            for metric in chartDefinition["metrics"]:
+                metricDict[metric["name"]] = metric["method"]
 
-        #finally group and summarise data
-        temp = temp.groupby(groupList).agg(metricDict).reset_index()
+            #finally group and summarise data
+            temp = temp.groupby(groupList).agg(metricDict).reset_index()
 
 
         #####################
@@ -489,35 +491,82 @@ def createSlides(charts):
                 fig.show()
 
         #save figure
-        if chartDefinition['type'] == 'barsubplot':
-            fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=1.1, height=1)
-        elif chartDefinition['name'] == 'Lead Quality - Lead Status Over Time':
-            fig.update_layout(margin=dict(r=0))
-            fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=2, height=1.7)
-        elif chartDefinition['size'] == 'wide':
-            fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=2, height=1.7)
-        else:
-            fig.write_image(chartDefinition['filename'] + ".png", scale=2)
+        if chartDefinition['type'] != 'table':
+            if chartDefinition['type'] == 'barsubplot':
+                fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=1.1, height=1)
+            elif chartDefinition['name'] == 'Lead Quality - Lead Status Over Time':
+                fig.update_layout(margin=dict(r=0))
+                fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=2, height=1.7)
+            elif chartDefinition['size'] == 'wide':
+                fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=2, height=1.7)
+            else:
+                fig.write_image(chartDefinition['filename'] + ".png", scale=2)
 
 
         #####################
         ### Create Slide and insert image + info
         #####################
 
-        #create slide
-        layout = prs.slide_layouts[slideIndex]
-        slide = prs.slides.add_slide(layout)
+        #if we are inserting a plotly image
+        if chartDefinition['type'] != 'table':
+            #create slide
+            layout = prs.slide_layouts[slideIndex]
+            slide = prs.slides.add_slide(layout)
 
-        #set title and subtitle
-        if 'name' in chartDefinition:
-            slide.placeholders[titleIndex].text = chartDefinition['name']
+            #set title and subtitle
+            if 'name' in chartDefinition:
+                slide.placeholders[titleIndex].text = chartDefinition['name']
 
-        #insert image
-        picture = slide.placeholders[chartIndex].insert_picture(chartDefinition['filename'] + ".png")
+            #insert image
+            picture = slide.placeholders[chartIndex].insert_picture(chartDefinition['filename'] + ".png")
 
-        #insert placeholder if desired, otherwise delete
-        if "description" in chartDefinition:
-            slide.placeholders[descriptionIndex].text = chartDefinition['description']
+            #insert placeholder if desired, otherwise delete
+            if "description" in chartDefinition:
+                slide.placeholders[descriptionIndex].text = chartDefinition['description']
+        else:
+            #insert table
+            shape = slide.placeholders[chartIndex].insert_table(rows=len(temp)+1, cols=len(temp.columns))
+            table = shape.table
+            
+            #iterate through every row and column and place the value that is present in the df
+            #for loop for the rows
+            for i in range(len(temp) + 1):
+                #for each row, get the value of the column
+                for i2 in range(len(temp.columns)):
+                    cell = table.cell(i,i2)
+                    #if we're dealing with the header
+                    if i == 0:
+                        cell.text = temp.columns[i2]
+                    else:
+                        text = temp.iloc[i-1, i2]
+                        textFormat = chartDefinition['column_formats'][i2]
+                        
+                        if textFormat == 'number':
+                            cell.text = str(int(text))
+                        elif textFormat == 'money':
+                            cell.text = "$" + str(int(text))
+                        elif textFormat == 'percent':
+                            cell.text = str(int(text * 100)) + "%"
+                        elif textFormat == 'twoDigitNum':
+                            cell.text = str(round(text, 2))
+                        else:
+                            cell.text = str(text)
+                        
+            #If we need to change the fill color for each cell
+            if 'fill_color' in chartDefinition:
+                #get the data for the fill coloring
+                fillData = chartDefinition['fill_color']
+                fillData = fillData.replace("#", '', regex=True)
+                
+                #loop through each cell
+                for i in range(len(temp) + 1):
+                    for i2 in range(len(temp.columns)):
+                        #skip the header
+                        if i != 0:
+                            cell = table.cell(i,i2)
+                            cell.fill.solid()
+                            color = RGBColor.from_string(fillData.iloc[i-1, i2])
+                            cell.fill.fore_color.rgb = color
 
     #finally save out file
     prs.save("output.pptx")

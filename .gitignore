@@ -1,2 +1,5 @@
 #ignore my development file
 example/development.ipynb
+
+#Ignore deployment notes
+deploymentNotes.md
