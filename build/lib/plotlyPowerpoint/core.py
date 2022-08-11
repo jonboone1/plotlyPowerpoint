@@ -4,7 +4,30 @@ from plotly.subplots import make_subplots
 from numerize import numerize 
 from scipy.stats import pearsonr
 from pptx.dml.color import RGBColor
+from pptx.oxml.xmlchemy import OxmlElement
 
+#Define functions for table/cell formatting
+def SubElement(parent, tagname, **kwargs):
+    element = OxmlElement(tagname)
+    element.attrib.update(kwargs)
+    parent.append(element)
+    return element
+
+def _set_cell_border(cell, border_color="000000", border_width='12700'):
+    tc = cell._tc
+    tcPr = tc.get_or_add_tcPr()
+    for lines in ['a:lnL','a:lnR','a:lnT','a:lnB']:
+        ln = SubElement(tcPr, lines, w=border_width, cap='flat', cmpd='sng', algn='ctr')
+        solidFill = SubElement(ln, 'a:NoFill')
+        srgbClr = SubElement(solidFill, 'a:srgbClr', val=border_color)
+        prstDash = SubElement(ln, 'a:prstDash', val='solid')
+        round_ = SubElement(ln, 'a:round')
+        headEnd = SubElement(ln, 'a:headEnd', type='none', w='med', len='med')
+        tailEnd = SubElement(ln, 'a:tailEnd', type='none', w='med', len='med')
+
+    return cell
+
+#function to set the powerpoint template being used
 def setTemplate(fileName):
     from pptx import Presentation
     
@@ -19,39 +42,12 @@ def setTemplate(fileName):
     except:
         raise Exception("File not found")
         
-def setItemIndex(item, index):
-    
-    #data validation
-    if type(item) != str:
-        raise Exception("Your item must be written as a string")
-        
-    if type(index) != int:
-        raise Exception("Your index must be written as an integer")
-        
-    #set slide
-    if item == 'slide':
-        global slideIndex
-        slideIndex = index
-    
-    #set title
-    if item == 'title':
-        global titleIndex
-        titleIndex = index
-    
-    #set description
-    if item == 'description':
-        global descriptionIndex
-        descriptionIndex = index
-        
-    #set chart
-    if item == 'chart':
-        global chartIndex
-        chartIndex = index
-        
+#function for setting a color palette for charts
 def setColors(colors):
     global colorPalette
     colorPalette = colors
     
+#master function for creating slides
 def createSlides(charts):
     
     #loop through each item in the array
@@ -327,7 +323,7 @@ def createSlides(charts):
             
             #Create Fig
             facets = temp[chartDefinition['facet']].unique().tolist()
-            if chartDefinition['facet_direction'] == 'rows':
+            if chartDefinition['facet-direction'] == 'rows':
                 fig = make_subplots(len(facets), 1)
             else:
                 fig = make_subplots(1, len(facets))
@@ -507,25 +503,26 @@ def createSlides(charts):
         ### Create Slide and insert image + info
         #####################
 
+        #create slide
+        layout = prs.slide_layouts[chartDefinition['item-index']['slide']]
+        slide = prs.slides.add_slide(layout)
+
         #if we are inserting a plotly image
         if chartDefinition['type'] != 'table':
-            #create slide
-            layout = prs.slide_layouts[slideIndex]
-            slide = prs.slides.add_slide(layout)
 
             #set title and subtitle
             if 'name' in chartDefinition:
-                slide.placeholders[titleIndex].text = chartDefinition['name']
+                slide.placeholders[chartDefinition['item-index']['title']].text = chartDefinition['name']
 
             #insert image
-            picture = slide.placeholders[chartIndex].insert_picture(chartDefinition['filename'] + ".png")
+            picture = slide.placeholders[chartDefinition['item-index']['chart']].insert_picture(chartDefinition['filename'] + ".png")
 
             #insert placeholder if desired, otherwise delete
             if "description" in chartDefinition:
-                slide.placeholders[descriptionIndex].text = chartDefinition['description']
+                slide.placeholders[chartDefinition['item-index']['description']].text = chartDefinition['description']
         else:
             #insert table
-            shape = slide.placeholders[chartIndex].insert_table(rows=len(temp)+1, cols=len(temp.columns))
+            shape = slide.placeholders[chartDefinition['item-index']['chart']].insert_table(rows=len(temp)+1, cols=len(temp.columns))
             table = shape.table
             
             #iterate through every row and column and place the value that is present in the df
@@ -552,6 +549,38 @@ def createSlides(charts):
                         else:
                             cell.text = str(text)
                         
+            #central formatting for every cell
+            for i in range(len(temp) + 1):
+                for i2 in range(len(temp.columns)):
+                    #Remove the border for each cell
+                    cell = table.cell(i,i2)
+                    cell = _set_cell_border(cell)
+                    
+                    #format color
+                    cell = table.cell(i,i2)
+                    paragraph = cell.text_frame.paragraphs[0]
+                    colorString = chartDefinition['text_color']
+                    color = RGBColor.from_string(colorString.replace('#',''))
+                    paragraph.font.color.rgb = color
+
+            #If we need to change the header fill
+            if 'header_fill_color' in chartDefinition:
+                for i in range(len(temp.columns)):
+                    cell = table.cell(0,i)
+                    cell.fill.solid()
+                    colorString = chartDefinition['header_fill_color']
+                    color = RGBColor.from_string(colorString.replace('#',''))
+                    cell.fill.fore_color.rgb = color
+                    
+            #If we need to change the header text color
+            if 'header_text_color' in chartDefinition:
+                for i in range(len(temp.columns)):
+                    cell = table.cell(0,i)
+                    colorString = chartDefinition['header_text_color']
+                    color = RGBColor.from_string(colorString.replace('#',''))
+                    paragraph = cell.text_frame.paragraphs[0]
+                    paragraph.font.color.rgb = color
+
             #If we need to change the fill color for each cell
             if 'fill_color' in chartDefinition:
                 #get the data for the fill coloring

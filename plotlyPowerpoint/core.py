@@ -507,19 +507,21 @@ def createSlides(charts):
         layout = prs.slide_layouts[chartDefinition['item-index']['slide']]
         slide = prs.slides.add_slide(layout)
 
+        #set title and subtitle
+        if 'name' in chartDefinition:
+            slide.placeholders[chartDefinition['item-index']['title']].text = chartDefinition['name']
+
+        #insert placeholder if desired, otherwise delete
+        if "description" in chartDefinition:
+            slide.placeholders[chartDefinition['item-index']['description']].text = chartDefinition['description']
+
         #if we are inserting a plotly image
         if chartDefinition['type'] != 'table':
-
-            #set title and subtitle
-            if 'name' in chartDefinition:
-                slide.placeholders[chartDefinition['item-index']['title']].text = chartDefinition['name']
 
             #insert image
             picture = slide.placeholders[chartDefinition['item-index']['chart']].insert_picture(chartDefinition['filename'] + ".png")
 
-            #insert placeholder if desired, otherwise delete
-            if "description" in chartDefinition:
-                slide.placeholders[chartDefinition['item-index']['description']].text = chartDefinition['description']
+            
         else:
             #insert table
             shape = slide.placeholders[chartDefinition['item-index']['chart']].insert_table(rows=len(temp)+1, cols=len(temp.columns))
@@ -596,6 +598,20 @@ def createSlides(charts):
                             cell.fill.solid()
                             color = RGBColor.from_string(fillData.iloc[i-1, i2])
                             cell.fill.fore_color.rgb = color
+
+            ### Now center the table in the middle of the slide
+            #get base variables
+            slideHeight = 5143500
+            titleHeight = slide.placeholders[chartDefinition['item-index']['title']].height if 'title' in chartDefinition['item-index'] else 0
+            tableHeight = slide.placeholders[chartDefinition['item-index']['chart']].height
+
+            #calculate where the table needs to start
+            middleOfSlide = int(slideHeight / 2) + int(titleHeight / 2)
+            halfTableHeight = int(tableHeight / 2)
+            idealTableStart = int(middleOfSlide - halfTableHeight)
+
+            #set the top of the table
+            slide.placeholders[chartDefinition['item-index']['chart']].top = idealTableStart
 
     #finally save out file
     prs.save("output.pptx")
