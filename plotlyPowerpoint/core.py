@@ -5,6 +5,7 @@ from numerize import numerize
 from scipy.stats import pearsonr
 from pptx.dml.color import RGBColor
 from pptx.oxml.xmlchemy import OxmlElement
+import os
 
 #Define functions for table/cell formatting
 def SubElement(parent, tagname, **kwargs):
@@ -479,6 +480,189 @@ def createSlides(charts):
                 )
             )
 
+        #Filled line chart
+        if chartDefinition['type'] == 'filledLine':
+            
+            #Figure out if there are multiple metrics. If so, throw an error
+            if len(chartDefinition['metrics']) == 1:
+
+                #Determine if we're grouping by color or not
+                if 'color' in chartDefinition:  
+                    fig = px.area(temp,
+                                  x=chartDefinition['axis'],
+                                  y=chartDefinition['metrics'][0]['name'],
+                                  color_discrete_sequence= mainColors,
+                                  color=chartDefinition['color'])
+                else:
+                    fig = px.area(temp,
+                              x=chartDefinition['axis'],
+                              y=chartDefinition['metrics'][0]['name'],
+                              color_discrete_sequence=mainColors
+                                 )
+
+            else: #we have multiple metrics 
+
+               raise ValueError('Filled line charts can only have one metric. Please convert your metrics into a variable:value format and break out the line chart by color')
+
+
+            #change aesthetics
+            fig.update_layout({
+                'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+                'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+            })
+
+            ### Handle all options
+            if 'options' in chartDefinition:
+
+                ### Grid lines
+                if 'horizontal-grid-lines' in chartDefinition['options']:
+                    if chartDefinition['options']['horizontal-grid-lines'] == 'true':
+                        fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#ebebeb')
+
+                if 'vertical-grid-lines' in chartDefinition['options']:
+                    if chartDefinition['options']['vertical-grid-lines'] == 'true':
+                        fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#ebebeb', title="")
+
+                ### X axis ticks rotation
+                if 'x-axis-ticks-angle' in chartDefinition['options']:
+                    fig.update_xaxes(nticks=temp[chartDefinition['axis']].nunique(), tickangle=chartDefinition['options']['x-axis-ticks-angle'])
+
+
+            #update legend
+            fig.update_layout(legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                xanchor="center",
+                x=.5,
+                y=-.3,
+                title=""
+            ))
+
+            #X axis title
+            if 'x-axis-title' in chartDefinition:
+                fig.update_layout(
+                    xaxis_title=chartDefinition['x-axis-title']
+                )
+
+            #Y axis title
+            if 'y-axis-title' in chartDefinition:
+                fig.update_layout(
+                    yaxis_title=chartDefinition['y-axis-title']
+                )
+
+        #Facet Fill Line
+        if chartDefinition['type'] == 'facetFilledLine':
+            
+            #throw error if there are multiple metrics
+            if len(chartDefinition['metrics']) > 1:
+                raise ValueError('Filled line charts can only have one metric. Please convert your metrics into a variable:value format and break out the line chart by color')
+
+            #Create Fig
+            facets = temp[chartDefinition['facet']].unique().tolist()
+            if chartDefinition['facet_direction'] == 'rows':
+                fig = make_subplots(len(facets), 1, subplot_titles=facets)
+            else:
+                fig = make_subplots(1, len(facets), subplot_titles=facets)
+
+            #Add the figure to each subplot
+            facetMemory = []
+            for facet in facets:
+                
+                #filter data for only current facet
+                temp2 = temp[temp[chartDefinition['facet']] == facet]
+                position = facets.index(facet)
+                
+                #Add figure, based on whether we're breaking down by color                
+                if 'color' in chartDefinition:
+                    colorOptions = list(temp2[chartDefinition['color']].unique())
+                    for clr in colorOptions:
+                        
+                        #set parameters we need later
+                        colorPosition = colorOptions.index(clr)
+                        showLegend = False if clr in facetMemory else True
+                        
+                        #form new temp
+                        temp3 = temp2[temp2[chartDefinition['color']] == clr]
+                        
+                        #add trace
+                        fig.add_trace(go.Scatter(
+                                x=temp3[chartDefinition['axis']],
+                                y=temp3[chartDefinition['metrics'][0]['name']],
+                                hoverinfo='x+y',
+                                mode='lines',
+                                stackgroup='one',
+                                fill='tonexty',
+                                name=clr,
+                                legendgroup=clr,
+                                showlegend=showLegend,
+                                line=dict(width=0.5, color=mainColors[colorPosition])
+                            ),
+                            position + 1 if chartDefinition['facet_direction'] == 'rows' else 1,
+                            position + 1 if chartDefinition['facet_direction'] == 'columns' else 1
+                        )
+                        
+                        #add memory that we now used this color option within the faceting
+                        facetMemory.append(clr)
+
+                        
+                else:
+                    fig.add_trace(go.Scatter(
+                            x=temp2[chartDefinition['axis']],
+                            y=temp2[chartDefinition['metrics'][0]['name']],
+                            hoverinfo='x+y',
+                            mode='lines',
+                            fill='tonexty',
+                            name=facet,
+                            line=dict(width=0.5)
+                        ),
+                        position + 1 if chartDefinition['facet_direction'] == 'rows' else 1,
+                        position + 1 if chartDefinition['facet_direction'] == 'columns' else 1
+                    )
+            
+            #change aesthetics
+            fig.update_layout({
+                'plot_bgcolor': 'rgba(0, 0, 0, 0)',
+                'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+            })
+            
+            
+            ### Handle all options
+            if 'options' in chartDefinition:
+
+                ### Grid lines
+                if 'horizontal-grid-lines' in chartDefinition['options']:
+                    if chartDefinition['options']['horizontal-grid-lines'] == 'true':
+                        fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='#ebebeb')
+
+                if 'vertical-grid-lines' in chartDefinition['options']:
+                    if chartDefinition['options']['vertical-grid-lines'] == 'true':
+                        fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#ebebeb')
+
+            #update legend
+            fig.update_layout(legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                xanchor="center",
+                x=.5,
+                y=-.3,
+                title=""
+            ))
+
+            #X axis title
+            if 'x-axis-title' in chartDefinition:
+                if chartDefinition['facet_direction'] == 'rows':
+                    fig.update_xaxes(title_text=chartDefinition['x-axis-title'], row=len(facets), col=1)
+                else:
+                    for i in range(len(facets)):
+                        fig.update_xaxes(title_text=chartDefinition['x-axis-title'], row=1, col=i+1)
+
+            #Y axis title
+            if 'y-axis-title' in chartDefinition:
+                if chartDefinition['facet_direction'] == 'rows':
+                    for i in range(len(facets)):
+                        fig.update_yaxes(title_text=chartDefinition['y-axis-title'], row=i+1, col=1)
+                else:
+                    fig.update_yaxes(title_text=chartDefinition['y-axis-title'], row=1, col=1)
 
             
         #Global options to handle outside of individual chart sections
@@ -488,15 +672,24 @@ def createSlides(charts):
 
         #save figure
         if chartDefinition['type'] != 'table':
+
+            #check if the folder for charts exists. If not, create it
+            if not os.path.exists('charts'):
+                os.makedirs('charts')
+            
+            #setup params
+            filename = 'charts/chart' + str(z) + '.png'
+            
+            #save out the files
             if chartDefinition['type'] == 'barsubplot':
-                fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=1.1, height=1)
+                fig.write_image(filename, scale=2, width=1.1, height=1)
             elif chartDefinition['name'] == 'Lead Quality - Lead Status Over Time':
                 fig.update_layout(margin=dict(r=0))
-                fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=2, height=1.7)
+                fig.write_image(filename, scale=2, width=2, height=1.7)
             elif chartDefinition['size'] == 'wide':
-                fig.write_image(chartDefinition['filename'] + ".png", scale=2, width=2, height=1.7)
+                fig.write_image(filename, scale=2, width=2, height=1.7)
             else:
-                fig.write_image(chartDefinition['filename'] + ".png", scale=2)
+                fig.write_image(filename, scale=2)
 
 
         #####################
@@ -519,7 +712,7 @@ def createSlides(charts):
         if chartDefinition['type'] != 'table':
 
             #insert image
-            picture = slide.placeholders[chartDefinition['item-index']['chart']].insert_picture(chartDefinition['filename'] + ".png")
+            picture = slide.placeholders[chartDefinition['item-index']['chart']].insert_picture(filename)
 
             
         else:

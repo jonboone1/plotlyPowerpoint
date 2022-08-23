@@ -80,7 +80,6 @@ As a start, I will define two basic charts:
             "data": df2,
             "type": "line",
             "name": "Stock Prices by Company",
-            "filename": 'charts/stock-prices-by-company',
             "metrics": [
                 {"name": "JohnsonJohnson", "prettyName": "Stock Price", "method": "mean"}
             ],
@@ -102,7 +101,6 @@ As a start, I will define two basic charts:
             "data": df,
             "type": "bar",
             "name": "Avg Spray Effictiveness by Type",
-            "filename": 'charts/spray-by-type',
             "metrics": [
                 {"name": "count", "prettyName": "Effectiveness", "method": "mean"},
                 {"name": "m2", "prettyName": "Effectiveness 2", "method": "mean"}
@@ -124,7 +122,7 @@ As a start, I will define two basic charts:
         }
     ]
 
-I will go into more detail on each one of these variables, but for now just note I am including a folder in my filename. I suggest storing all of your images in a separate folder, but if you do, make sure you create it in the root of your project folder.
+I will go into more detail on each one of these variables in a later section.
 
 ### Step 8 - Run Function
     #run function

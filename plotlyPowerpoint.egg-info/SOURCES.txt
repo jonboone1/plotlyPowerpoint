@@ -31,9 +31,6 @@ example/output.pptx
 example/output2.pptx
 example/template.pptx
 example/.ipynb_checkpoints/getting_started-checkpoint.ipynb
-example/charts/many-stock-prices-facet.png
-example/charts/spray-by-type.png
-example/charts/stock-prices-by-company.png
 plotlyPowerpoint/__init__.py
 plotlyPowerpoint/core.py
 plotlyPowerpoint.egg-info/PKG-INFO
