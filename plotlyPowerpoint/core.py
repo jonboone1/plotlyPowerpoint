@@ -71,16 +71,15 @@ def createSlides(charts):
                     statement = "temp['" + item["variable"] + "'] " + item["operation"] + " int(" + item["value"] + ")"
                 elif item['type'] == 'str':
                     statement = "temp['" + item["variable"] + "'] " + item["operation"] + " '" + item["value"] + "'"
-                elif item['type'] == 'arr':
-                    statement = "temp[temp['" + item["variable"] + "']" + item['operation'] + item['value'] + ")]"
+                elif (item['type'] == 'list') and (item['operation'] == 'in'):
+                    statement = "temp['" + item["variable"] + "'].isin(" + str(item["value"]) + ")"
+                elif (item['type'] == 'list') and (item['operation'] == 'not in'):
+                    statement = "~temp['" + item["variable"] + "'].isin(" + str(item["value"]) + ")"
                 filters.append(statement)
 
             #filter data
             for i in range(len(filters)):
-                if ".isin(" in filters[i]:
-                    temp = eval(filters[i])
-                else:
-                    temp = temp.loc[eval(filters[i]), :]
+                temp = temp.loc[eval(filters[i]), :]
 
         #group data by axis and breakdowns
         if chartDefinition['type'] != 'table':
