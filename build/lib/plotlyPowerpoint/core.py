@@ -687,8 +687,6 @@ def createSlides(charts):
             elif chartDefinition['name'] == 'Lead Quality - Lead Status Over Time':
                 fig.update_layout(margin=dict(r=0))
                 fig.write_image(filename, scale=2, width=2, height=1.7)
-            elif chartDefinition['size'] == 'wide':
-                fig.write_image(filename, scale=2, width=2, height=1.7)
             else:
                 fig.write_image(filename, scale=2)
 
