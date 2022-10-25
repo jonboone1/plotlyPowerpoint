@@ -71,6 +71,8 @@ def createSlides(charts):
                     statement = "temp['" + item["variable"] + "'] " + item["operation"] + " int(" + item["value"] + ")"
                 elif item['type'] == 'str':
                     statement = "temp['" + item["variable"] + "'] " + item["operation"] + " '" + item["value"] + "'"
+                elif item['type'] == 'date':
+                    statement = "temp['" + item["variable"] + "'] " + item["operation"] + " '" + item["value"] + "'"
                 elif (item['type'] == 'list') and (item['operation'] == 'in'):
                     statement = "temp['" + item["variable"] + "'].isin(" + str(item["value"]) + ")"
                 elif (item['type'] == 'list') and (item['operation'] == 'not in'):

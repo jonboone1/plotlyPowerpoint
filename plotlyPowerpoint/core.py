@@ -71,6 +71,8 @@ def createSlides(charts):
                     statement = "temp['" + item["variable"] + "'] " + item["operation"] + " int(" + item["value"] + ")"
                 elif item['type'] == 'str':
                     statement = "temp['" + item["variable"] + "'] " + item["operation"] + " '" + item["value"] + "'"
+                elif item['type'] == 'date':
+                    statement = "temp['" + item["variable"] + "'] " + item["operation"] + " '" + item["value"] + "'"
                 elif (item['type'] == 'list') and (item['operation'] == 'in'):
                     statement = "temp['" + item["variable"] + "'].isin(" + str(item["value"]) + ")"
                 elif (item['type'] == 'list') and (item['operation'] == 'not in'):
@@ -684,8 +686,6 @@ def createSlides(charts):
                 fig.write_image(filename, scale=2, width=1.1, height=1)
             elif chartDefinition['name'] == 'Lead Quality - Lead Status Over Time':
                 fig.update_layout(margin=dict(r=0))
-                fig.write_image(filename, scale=2, width=2, height=1.7)
-            elif chartDefinition['size'] == 'wide':
                 fig.write_image(filename, scale=2, width=2, height=1.7)
             else:
                 fig.write_image(filename, scale=2)
