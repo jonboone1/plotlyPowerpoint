@@ -606,8 +606,8 @@ def createSlides(charts):
                                 showlegend=showLegend,
                                 line=dict(width=0.5, color=mainColors[colorPosition])
                             ),
-                            position + 1 if chartDefinition['facet_direction'] == 'rows' else 1,
-                            position + 1 if chartDefinition['facet_direction'] == 'columns' else 1
+                            position + 1 if chartDefinition['facet-direction'] == 'rows' else 1,
+                            position + 1 if chartDefinition['facet-direction'] == 'columns' else 1
                         )
                         
                         #add memory that we now used this color option within the faceting
@@ -624,8 +624,8 @@ def createSlides(charts):
                             name=facet,
                             line=dict(width=0.5)
                         ),
-                        position + 1 if chartDefinition['facet_direction'] == 'rows' else 1,
-                        position + 1 if chartDefinition['facet_direction'] == 'columns' else 1
+                        position + 1 if chartDefinition['facet-direction'] == 'rows' else 1,
+                        position + 1 if chartDefinition['facet-direction'] == 'columns' else 1
                     )
             
             #change aesthetics
@@ -659,7 +659,7 @@ def createSlides(charts):
 
             #X axis title
             if 'x-axis-title' in chartDefinition:
-                if chartDefinition['facet_direction'] == 'rows':
+                if chartDefinition['facet-direction'] == 'rows':
                     fig.update_xaxes(title_text=chartDefinition['x-axis-title'], row=len(facets), col=1)
                 else:
                     for i in range(len(facets)):
@@ -667,7 +667,7 @@ def createSlides(charts):
 
             #Y axis title
             if 'y-axis-title' in chartDefinition:
-                if chartDefinition['facet_direction'] == 'rows':
+                if chartDefinition['facet-direction'] == 'rows':
                     for i in range(len(facets)):
                         fig.update_yaxes(title_text=chartDefinition['y-axis-title'], row=i+1, col=1)
                 else:
@@ -739,6 +739,18 @@ def createSlides(charts):
                     else:
                         text = temp.iloc[i-1, i2]
                         textFormat = chartDefinition['column_formats'][i2]
+
+                        #catch Nan values for numeric based values
+                        if 'float' in str(type(text)) or 'int' in str(type(text)):
+                            if math.isnan(text):
+                                cell.text = ''
+                                continue
+                                
+                        #catch Nan values for string based values
+                        if 'str' in str(type(float)) or 'NoneType' in str(type(text)):
+                            if text is None:
+                                cell.text = ''
+                                continue
                         
                         if textFormat == 'number':
                             cell.text = str(int(text))
@@ -753,15 +765,6 @@ def createSlides(charts):
                         else:
                             cell.text = str(text)
 
-                        #catch Nan values for numeric based values
-                        if 'float' in str(type(text)) or 'int' in str(type(text)):
-                            if math.isnan(text):
-                                cell.text = ''
-                                
-                        #catch Nan values for string based values
-                        if 'str' in str(type(float)) or 'NoneType' in str(type(text)):
-                            if text is None:
-                                cell.text = ''
                         
             #central formatting for every cell
             for i in range(len(temp) + 1):
