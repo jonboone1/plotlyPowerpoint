@@ -325,10 +325,12 @@ def createSlides(charts):
             
             #Create Fig
             facets = temp[chartDefinition['facet']].unique().tolist()
+            facetSpacing = chartDefinition['options']['facet-spacing'] if 'facet-spacing' in chartDefinition['options'] else 0.1
+            
             if chartDefinition['facet-direction'] == 'rows':
-                fig = make_subplots(len(facets), 1)
+                fig = make_subplots(len(facets), 1, vertical_spacing=facetSpacing)
             else:
-                fig = make_subplots(1, len(facets))
+                fig = make_subplots(1, len(facets), horizontal_spacing=facetSpacing)
 
             #add traces for all metrics and all facets
             for i in range(len(chartDefinition['metrics'])):
@@ -379,6 +381,7 @@ def createSlides(charts):
                     if chartDefinition['options']['vertical-grid-lines'] == 'true':
                         fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='#ebebeb')
 
+
             #update legend
             fig.update_layout(legend=dict(
                 orientation="h",
@@ -411,10 +414,12 @@ def createSlides(charts):
             
             #Create Fig
             facets = temp[chartDefinition['facet']].unique().tolist()
+            facetSpacing = chartDefinition['options']['facet-spacing'] if 'facet-spacing' in chartDefinition['options'] else 0.1
+            
             if chartDefinition['facet-direction'] == 'rows':
-                fig = make_subplots(len(facets), 1)
+                fig = make_subplots(len(facets), 1, vertical_spacing=facetSpacing)
             else:
-                fig = make_subplots(1, len(facets))
+                fig = make_subplots(1, len(facets), horizontal_spacing=facetSpacing)
 
             #add traces for all metrics and all facets
             for i in range(len(chartDefinition['metrics'])):
@@ -560,10 +565,12 @@ def createSlides(charts):
 
             #Create Fig
             facets = temp[chartDefinition['facet']].unique().tolist()
-            if chartDefinition['facet_direction'] == 'rows':
-                fig = make_subplots(len(facets), 1, subplot_titles=facets)
+            facetSpacing = chartDefinition['options']['facet-spacing'] if 'facet-spacing' in chartDefinition['options'] else 0.1
+            
+            if chartDefinition['facet-direction'] == 'rows':
+                fig = make_subplots(len(facets), 1, vertical_spacing=facetSpacing)
             else:
-                fig = make_subplots(1, len(facets), subplot_titles=facets)
+                fig = make_subplots(1, len(facets), horizontal_spacing=facetSpacing)
 
             #Add the figure to each subplot
             facetMemory = []
@@ -740,6 +747,8 @@ def createSlides(charts):
                             cell.text = str(int(text * 100)) + "%"
                         elif textFormat == 'twoDigitNum':
                             cell.text = str(round(text, 2))
+                        elif textFormat == 'date':
+                            cell.text = text.strftime('%m/%d/%Y')
                         else:
                             cell.text = str(text)
                         
