@@ -739,6 +739,18 @@ def createSlides(charts):
                     else:
                         text = temp.iloc[i-1, i2]
                         textFormat = chartDefinition['column_formats'][i2]
+
+                        #catch Nan values for numeric based values
+                        if 'float' in str(type(text)) or 'int' in str(type(text)):
+                            if math.isnan(text):
+                                cell.text = ''
+                                continue
+                                
+                        #catch Nan values for string based values
+                        if 'str' in str(type(float)) or 'NoneType' in str(type(text)):
+                            if text is None:
+                                cell.text = ''
+                                continue
                         
                         if textFormat == 'number':
                             cell.text = str(int(text))
@@ -753,15 +765,6 @@ def createSlides(charts):
                         else:
                             cell.text = str(text)
 
-                        #catch Nan values for numeric based values
-                        if 'float' in str(type(text)) or 'int' in str(type(text)):
-                            if math.isnan(text):
-                                cell.text = ''
-                                
-                        #catch Nan values for string based values
-                        if 'str' in str(type(float)) or 'NoneType' in str(type(text)):
-                            if text is None:
-                                cell.text = ''
                         
             #central formatting for every cell
             for i in range(len(temp) + 1):

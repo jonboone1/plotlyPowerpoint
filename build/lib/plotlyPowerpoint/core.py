@@ -6,6 +6,7 @@ from scipy.stats import pearsonr
 from pptx.dml.color import RGBColor
 from pptx.oxml.xmlchemy import OxmlElement
 import os
+import math
 
 #Define functions for table/cell formatting
 def SubElement(parent, tagname, **kwargs):
@@ -751,6 +752,16 @@ def createSlides(charts):
                             cell.text = text.strftime('%m/%d/%Y')
                         else:
                             cell.text = str(text)
+
+                        #catch Nan values for numeric based values
+                        if 'float' in str(type(text)) or 'int' in str(type(text)):
+                            if math.isnan(text):
+                                cell.text = ''
+                                
+                        #catch Nan values for string based values
+                        if 'str' in str(type(float)) or 'NoneType' in str(type(text)):
+                            if text is None:
+                                cell.text = ''
                         
             #central formatting for every cell
             for i in range(len(temp) + 1):
