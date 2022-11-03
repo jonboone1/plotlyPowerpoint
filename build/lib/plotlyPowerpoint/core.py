@@ -5,6 +5,7 @@ from numerize import numerize
 from scipy.stats import pearsonr
 from pptx.dml.color import RGBColor
 from pptx.oxml.xmlchemy import OxmlElement
+from pptx.util import Pt
 import os
 import math
 
@@ -798,6 +799,13 @@ def createSlides(charts):
                     paragraph = cell.text_frame.paragraphs[0]
                     paragraph.font.color.rgb = color
 
+            #If we need to change the font size of the header
+            if 'header_font_size' in chartDefinition:
+                for i in range(len(temp.columns)):
+                    cell = table.cell(0,i)
+                    paragraph = cell.text_frame.paragraphs[0]
+                    paragraph.font.size = Pt(int(chartDefinition['header_font_size']))
+
             #If we need to change the fill color for each cell
             if 'fill_color' in chartDefinition:
                 #get the data for the fill coloring
@@ -813,6 +821,17 @@ def createSlides(charts):
                             cell.fill.solid()
                             color = RGBColor.from_string(fillData.iloc[i-1, i2])
                             cell.fill.fore_color.rgb = color
+
+            #if we need to change the font size for the main cells
+            if 'text_font_size' in chartDefinition:
+                #loop through each cell
+                for i in range(len(temp) + 1):
+                    for i2 in range(len(temp.columns)):
+                        #skip the header
+                        if i != 0:
+                            cell = table.cell(i, i2)
+                            paragraph = cell.text_frame.paragraphs[0]
+                            paragraph.font.size = Pt(int(chartDefinition['text_font_size']))
 
             ### Now center the table in the middle of the slide
             #get base variables
