@@ -810,7 +810,7 @@ def createSlides(charts):
             if 'fill_color' in chartDefinition:
                 #get the data for the fill coloring
                 fillData = chartDefinition['fill_color']
-                fillData = fillData.replace("#", '')
+                fillData = fillData.replace("#", '', regex=True)
                 
                 #loop through each cell
                 for i in range(len(temp) + 1):

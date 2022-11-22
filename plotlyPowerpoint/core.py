@@ -843,7 +843,7 @@ def createSlides(charts):
             #calculate where the table needs to start
             middleOfSlide = int(slideHeight / 2) + int(titleHeight / 2)
             halfTableHeight = int(tableHeight / 2)
-            idealTableStart = int(middleOfSlide - halfTableHeight - heightOffset)
+            idealTableStart = int(middleOfSlide - halfTableHeight + heightOffset)
 
             #set the top of the table
             slide.placeholders[chartDefinition['item-index']['chart']].top = idealTableStart
