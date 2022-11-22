@@ -819,7 +819,7 @@ def createSlides(charts):
                         if i != 0:
                             cell = table.cell(i,i2)
                             cell.fill.solid()
-                            color = RGBColor.from_string(fillData)
+                            color = RGBColor.from_string(fillData.iloc[i-1, i2])
                             cell.fill.fore_color.rgb = color
 
             #if we need to change the font size for the main cells

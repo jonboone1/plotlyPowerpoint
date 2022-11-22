@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="plotlyPowerpoint",
-    version="1.2.13",
+    version="1.2.15",
     author="Jon Boone",
     author_email="jonboone1@gmail.com",
     description="A library using Plotly and Powerpoint to easily generate slides with plotly charts in them",
