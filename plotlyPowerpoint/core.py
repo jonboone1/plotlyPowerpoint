@@ -716,6 +716,10 @@ def createSlides(charts):
         if "description" in chartDefinition:
             slide.placeholders[chartDefinition['item-index']['description']].text = chartDefinition['description']
 
+        #insert subtitle if present in dictionary
+        if "subtitle" in chartDefinition:
+            slide.placeholders[chartDefinition['item-index']['subtitle']].text = chartDefinition['subtitle']
+
         #if we are inserting a plotly image
         if chartDefinition['type'] != 'table':
 
