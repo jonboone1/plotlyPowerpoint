@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: plotlyPowerpoint
-Version: 1.2.10
+Version: 1.2.11
 Summary: A library using Plotly and Powerpoint to easily generate slides with plotly charts in them
 Home-page: https://github.com/jonboone1/plotlyPowerpoint
 Author: Jon Boone
